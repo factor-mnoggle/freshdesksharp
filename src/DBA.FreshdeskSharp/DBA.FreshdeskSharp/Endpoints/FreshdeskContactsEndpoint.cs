@@ -35,7 +35,7 @@ namespace DBA.FreshdeskSharp.Endpoints
             var requestUri = $"{_apiBaseUri}/contacts{query}";
             using (var response = await _httpClient.GetAsync(requestUri).ConfigureAwait(false))
             {
-                var result = await GetResponseAsync<List<FreshdeskContactInternal<TCustomFieldObject>>>(response).ConfigureAwait(false);
+                var result = await GetResponseAsync<List<FreshdeskContactFromListInternal<TCustomFieldObject>>>(response).ConfigureAwait(false);
                 return result.Select(contact => contact.ToContact()).ToList();
             }
         }
