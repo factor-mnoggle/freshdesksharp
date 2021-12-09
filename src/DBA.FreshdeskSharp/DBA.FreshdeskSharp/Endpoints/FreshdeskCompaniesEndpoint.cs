@@ -97,6 +97,17 @@ namespace DBA.FreshdeskSharp.Endpoints
             }
         }
 
+        public async Task<FreshdeskCompanySearchByNameResults> SearchByNameAsync(string name)
+        {
+            var query = $"?name=\"{WebUtility.UrlEncode(name)}\"";
+            var requestUri = $"{_apiBaseUri}/companies/autocomplete{query}";
+            using (var response = await _httpClient.GetAsync(requestUri).ConfigureAwait(false))
+            {
+                return await GetResponseAsync<FreshdeskCompanySearchByNameResults>(response).ConfigureAwait(false);
+            }
+        }
+
+
         public async Task<List<FreshdeskCompanyField>> GetFieldsAsync()
         {
             var requestUri = $"{_apiBaseUri}/company_fields";
