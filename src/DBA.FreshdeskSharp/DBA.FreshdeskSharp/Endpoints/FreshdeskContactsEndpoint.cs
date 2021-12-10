@@ -40,6 +40,23 @@ namespace DBA.FreshdeskSharp.Endpoints
             }
         }
 
+
+        public async Task<FreshdeskContactSearchResults<FreshdeskCustomFields>> SearchAsync(string searchQuery)
+        {
+            return await SearchAsync<FreshdeskCustomFields>(searchQuery).ConfigureAwait(false);
+        }
+
+        public async Task<FreshdeskContactSearchResults<TCustomFieldObject>> SearchAsync<TCustomFieldObject>(string searchQuery) where TCustomFieldObject : class
+        {
+            var query = $"?query=\"{WebUtility.UrlEncode(searchQuery)}\"";
+            var requestUri = $"{_apiBaseUri}/search/contacts{query}";
+            using (var response = await _httpClient.GetAsync(requestUri).ConfigureAwait(false))
+            {
+                return await GetResponseAsync<FreshdeskContactSearchResults<TCustomFieldObject>>(response).ConfigureAwait(false);
+            }
+        }
+
+
         public async Task<FreshdeskContact<FreshdeskCustomFields>> GetAsync(ulong id)
         {
             return await GetAsync<FreshdeskCustomFields>(id).ConfigureAwait(false);
