@@ -62,6 +62,30 @@ namespace DBA.FreshdeskSharp.Endpoints
             }
         }
 
+
+        public async Task<FreshdeskConversationReply> CreateReplyAsync(ulong ticketid, FreshdeskConversationReply reply)
+        {
+            var requestJson = JsonConvert.SerializeObject(reply, _serializationSettings);
+            var requestUri = $"{_apiBaseUri}/tickets/{ticketid}/reply";
+            using (var requestContent = new StringContent(requestJson, Encoding.UTF8, "application/json"))
+            using (var response = await _httpClient.PostAsync(requestUri, requestContent).ConfigureAwait(false))
+            {
+                return await GetResponseAsync<FreshdeskConversationReply>(response).ConfigureAwait(false);
+            }
+        }
+
+
+        public async Task<FreshdeskNoteResponse> CreateNoteAsync(ulong ticketid, FreshdeskNote note)
+        {
+            var requestJson = JsonConvert.SerializeObject(note, _serializationSettings);
+            var requestUri = $"{_apiBaseUri}/tickets/{ticketid}/notes";
+            using (var requestContent = new StringContent(requestJson, Encoding.UTF8, "application/json"))
+            using (var response = await _httpClient.PostAsync(requestUri, requestContent).ConfigureAwait(false))
+            {
+                return await GetResponseAsync<FreshdeskNoteResponse>(response).ConfigureAwait(false);
+            }
+        }
+
         public async Task<List<FreshdeskTicket<FreshdeskCustomFields>>> GetListAsync(FreshdeskTicketListOptions options)
         {
             return await GetListAsync<FreshdeskCustomFields>(options).ConfigureAwait(false);
@@ -103,8 +127,8 @@ namespace DBA.FreshdeskSharp.Endpoints
             return await SearchAsync<TCustomFieldObject>(searchQueryExp).ConfigureAwait(false);
         }
 
-        public async Task<FreshdeskTicketSearchResults<TCustomFieldObject>> SearchAsync<TCustomFieldObject, TTicketQueryFields>(Expression<Func<TTicketQueryFields, bool>> searchQuery) 
-            where TTicketQueryFields : IFreshdeskTicketQuery 
+        public async Task<FreshdeskTicketSearchResults<TCustomFieldObject>> SearchAsync<TCustomFieldObject, TTicketQueryFields>(Expression<Func<TTicketQueryFields, bool>> searchQuery)
+            where TTicketQueryFields : IFreshdeskTicketQuery
             where TCustomFieldObject : class
         {
             var searchQueryExp = FreshdeskTicketSearchQueryBuilder.Build(searchQuery);
